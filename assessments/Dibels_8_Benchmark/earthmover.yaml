@@ -8,6 +8,7 @@ config:
   show_graph: False
   parameter_defaults:
     STUDENT_ID_NAME: Student Primary ID
+    CLASS_ID_NAME: Reporting Class ID
     STUDENT_ID_FROM: Student Primary ID
     STUDENT_ID_XWALK: ''
     DATABASE_CONNECTION: ''
@@ -63,6 +64,7 @@ transformations:
     - operation: rename_columns
       columns: 
         ${STUDENT_ID_NAME}: primary_id_student_id
+        ${CLASS_ID_NAME}: vendor_class_id
     - operation: snake_case_columns
     - operation: add_columns
       columns:
@@ -72,6 +74,7 @@ transformations:
       columns:
         school_year: *year_mapping
         student_assessment_id: *id_hashing
+          # vendor_school_id: "{%raw%}{{value.split('_')[0]}}{%endraw%}"
   
  assessments:
   source: $transformations.dibels_benchmark_student_assessment

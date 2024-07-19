@@ -10,6 +10,7 @@
   "studentReference": {
     "studentUniqueId": "{{primary_id_student_id}}"
   },
+  "administrationEnvironmentDescriptor": "{{vendor_class_id}}"
   "administrationDate": "{{client_date}}",
   "performanceLevels": [
     {% set all_pls = [] %}
