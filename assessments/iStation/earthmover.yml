@@ -26,15 +26,6 @@ sources:
   performanceLevelDescriptors:
     file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
     header_rows: 1
-  map_grade_level:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  map_percentile_to_level:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
-  map_percentile_to_tier:
-    file: ${BUNDLE_DIR}/seeds/performanceLevelDescriptors.csv
-    header_rows: 1
 
   {% if "${DATABASE_CONNECTION}" | length %}
   student_id_mapping:
