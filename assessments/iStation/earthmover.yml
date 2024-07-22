@@ -53,6 +53,24 @@ sources:
 
 transformations:
   # This step is done before iterating through the months because the run-time Jinja requres an actual column name. Something like {{month ~ 'LEVEL'}} won't work
+  {% if "${ISTATION_ENDPOINT}" == "export" %}
+  # The export data is already stacked
+  stacked_results:
+    source: $sources.istation_input
+    operations:
+      - operation: add_columns
+        columns:
+          perf_lvl_type: "{%raw%}tier{%endraw%}"
+      - operation: rename_columns
+        columns:
+          STUDENT_ID: student_id
+          DOMAIN: domain
+          GRADE: grade_level
+          UDATE: admin_date
+          SCORE: score
+          PTILE: percentile
+          TIER: perf_lvl_value
+  {% else %}
   define_perf_levels:
     source: $sources.istation_input
     operations:
@@ -101,7 +119,7 @@ transformations:
         behavior: include
   {% endfor %}  
 
-  stacked_months:
+  stacked_results:
     source: $transformations.scores_{{months[0]}}
     operations:
       - operation: union
@@ -109,23 +127,8 @@ transformations:
           {% for month in months[1:] %}
           - $transformations.scores_{{month}}
           {% endfor %}
+  {% endif %}
 
-  # The export data is already stacked
-  renamed_export:
-    source: $sources.istation_input
-    operations:
-      - operation: add_columns
-        columns:
-          perf_lvl_type: "{%raw%}tier{%endraw%}"
-      - operation: rename_columns
-        columns:
-          STUDENT_ID: student_id
-          DOMAIN: domain
-          GRADE: grade_level
-          UDATE: admin_date
-          SCORE: score
-          PTILE: percentile
-          TIER: perf_lvl_value
 
   {% if "${SUBJECT}" == "reading" %}
     {% set test = "Istation Reading" %}
@@ -134,11 +137,7 @@ transformations:
   {% endif %}
   studentAssessments:
     source: 
-      {% if "${ISTATION_ENDPOINT}" == "export" %}
-      $transformations.renamed_export
-      {% else %}
-      $transformations.stacked_months
-      {% endif %}
+      $transformations.stacked_results
     operations:
       - operation: join
         sources:
